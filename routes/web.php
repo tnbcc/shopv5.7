@@ -23,6 +23,9 @@ Route::group(['middleware' => ['auth', 'email_verified']], function() {
     Route::post('products/{product}/favorite', 'ProductsController@favor')->name('products.favor');
     Route::delete('products/{product}/favorite', 'ProductsController@disfavor')->name('products.disfavor');
 
+    //收藏商品列表
+    Route::get('products/favorites', 'ProductsController@favorites')->name('products.favorites');
+
 });
 
 Route::get('pages/error', function (){
