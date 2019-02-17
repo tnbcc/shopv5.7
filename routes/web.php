@@ -1,6 +1,6 @@
 <?php
 
-Route::get('/', 'PagesController@root')->name('root');
+Route::redirect('/', '/products')->name('root');
 
 Auth::routes();
 
@@ -25,3 +25,5 @@ Route::get('pages/error', function (){
     $msg = request('msg');
    return view('pages.error',compact('msg'));
 })->name('pages.error');
+
+Route::get('products', 'ProductsController@index')->name('products.index');
