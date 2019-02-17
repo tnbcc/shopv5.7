@@ -19,6 +19,10 @@ Route::group(['middleware' => ['auth', 'email_verified']], function() {
     Route::put('user_addresses/{address}', 'UserAddressesController@update')->name('user_addresses.update');
     Route::delete('user_addresses/{address}', 'UserAddressesController@destroy')->name('user_addresses.destroy');
 
+    //收藏取消商品
+    Route::post('products/{product}/favorite', 'ProductsController@favor')->name('products.favor');
+    Route::delete('products/{product}/favorite', 'ProductsController@disfavor')->name('products.disfavor');
+
 });
 
 Route::get('pages/error', function (){
