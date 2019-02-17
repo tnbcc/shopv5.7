@@ -27,3 +27,4 @@ Route::get('pages/error', function (){
 })->name('pages.error');
 
 Route::get('products', 'ProductsController@index')->name('products.index');
+Route::get('products/{product}', 'ProductsController@show')->name('products.show');

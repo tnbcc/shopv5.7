@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\InvalidRequestException;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -42,5 +43,14 @@ class ProductsController extends Controller
         ];
 
         return view('products.index', compact('products', 'filters'));
+    }
+
+    public function show(Request $request, Product $product)
+    {
+        if (!$product->on_sale) {
+            throw new InvalidRequestException('该商品未上架');
+        }
+
+        return view('products.show', compact('product'));
     }
 }
