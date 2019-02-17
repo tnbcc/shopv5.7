@@ -46,6 +46,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
+            if ($request->expectsJson()) {
+                return response()->json(['您没有访问权限'], $exception->getCode());
+            }
+              $msg = '您没有访问权限';
+             return redirect()->route('pages.error',compact('msg'));
+        }
+
         return parent::render($request, $exception);
     }
 }
