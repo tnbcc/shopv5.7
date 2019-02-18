@@ -31,6 +31,9 @@ Route::group(['middleware' => ['auth', 'email_verified']], function() {
     Route::get('cart', 'CartController@index')->name('cart.index');
     Route::delete('cart/{sku}', 'CartController@remove')->name('cart.remove');
 
+    //添加订单
+    Route::post('orders', 'OrdersController@store')->name('orders.store');
+
 });
 
 Route::get('pages/error', function (){

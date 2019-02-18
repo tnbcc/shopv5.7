@@ -84,7 +84,7 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public function findAvailableNo()
+    public static function findAvailableNo()
     {
         $prefix = date('YmdHis');
 
