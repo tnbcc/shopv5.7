@@ -45,6 +45,19 @@
                             <div class="line"><div class="line-label">收货地址：</div><div class="line-value">{{ join(' ', $order->address) }}</div></div>
                             <div class="line"><div class="line-label">订单备注：</div><div class="line-value">{{ $order->remark ?: '-' }}</div></div>
                             <div class="line"><div class="line-label">订单编号：</div><div class="line-value">{{ $order->no }}</div></div>
+                            <!-- 输出物流状态 -->
+                            <div class="line">
+                                <div class="line-label">物流状态：</div>
+                                <div class="line-value">{{ \App\Models\Order::$shipStatusMap[$order->ship_status] }}</div>
+                            </div>
+                            <!-- 如果有物流信息则展示 -->
+                            @if($order->ship_data)
+                                <div class="line">
+                                    <div class="line-label">物流信息：</div>
+                                    <div class="line-value">{{ $order->ship_data['express_company'] }} {{ $order->ship_data['express_no'] }}</div>
+                                </div>
+                            @endif
+
                         </div>
                         <div class="order-summary text-right">
                             <div class="total-amount">
@@ -54,7 +67,7 @@
                             <div>
                                 <span>订单状态：</span>
                                 <div class="value">
-                                    @if($order->paid_at)
+                                    @if($order->paid_at && !$order->closed)
                                         @if($order->refund_status === \App\Models\Order::REFUND_STATUS_PENDING)
                                             已支付
                                         @else
@@ -65,6 +78,13 @@
                                     @else
                                         未支付
                                     @endif
+                                    <!-- 如果订单的发货状态为已发货则展示确认收货按钮 -->
+                                        @if($order->ship_status === \App\Models\Order::SHIP_STATUS_DELIVERED)
+                                            <div class="receive-button">
+                                                <button type="button" id="btn-receive" class="btn btn-sm btn-success">确认收货</button>
+                                            </div>
+                                        @endif
+
                                 </div>
                             </div>
                             <!-- 支付按钮开始 -->
@@ -100,6 +120,25 @@
                             location.reload();
                         }
                     })
+            });
+
+            $('#btn-receive').click(function () {
+               swal({
+                   title: "确认已经收到商品?",
+                   icon: "warning",
+                   dangerMode: true,
+                   buttons: ['取消', '确认收到'],
+               })
+                   .then(function (ret) {
+                       if (!ret) {
+                           return;
+                       }
+
+                       axios.post('{{ route('orders.received', [$order->id]) }}')
+                           .then(function () {
+                               location.reload();
+                           })
+                   });
             });
         });
     </script>

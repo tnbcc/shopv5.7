@@ -35,6 +35,7 @@ Route::group(['middleware' => ['auth', 'email_verified']], function() {
     //添加订单
     Route::post('orders', 'OrdersController@store')->name('orders.store');
     Route::get('orders/{order}', 'OrdersController@show')->name('orders.show');
+    Route::post('orders/{order}/received', 'OrdersController@received')->name('orders.received');
 
     //支付宝付款
     Route::get('payment/{order}/alipay', 'PaymentController@payByAlipay')->name('payment.alipay');
