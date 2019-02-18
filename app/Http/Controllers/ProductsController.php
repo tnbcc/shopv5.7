@@ -51,6 +51,8 @@ class ProductsController extends Controller
             throw new InvalidRequestException('该商品未上架');
         }
 
+        $favored = false;
+
         if ($user = $request->user()) {
             $favored = boolval($user->favoriteProducts()->find($product->id));
         }
