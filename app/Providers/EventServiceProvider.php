@@ -18,6 +18,11 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             \App\Listeners\RegisteredListener::class,
         ],
+        \App\Events\OrderPaid::class => [
+            \App\Listeners\UpdateProductSoldCount::class,
+            \App\Listeners\SendOrderPaidMail::class,
+
+        ]
     ];
 
     /**
