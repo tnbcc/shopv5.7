@@ -37,11 +37,11 @@ Route::group(['middleware' => ['auth', 'email_verified']], function() {
     Route::get('orders/{order}', 'OrdersController@show')->name('orders.show');
 
     //支付宝付款
-
     Route::get('payment/{order}/alipay', 'PaymentController@payByAlipay')->name('payment.alipay');
     //支付宝前端回调
     Route::get('payment/alipay/return', 'PaymentController@alipayReturn')->name('payment.alipay.return');
-
+    //微信支付
+    Route::get('payment/{order}/wechat', 'PaymentController@payByWechat')->name('payment.wechat');
 });
 
 Route::get('pages/error', function (){
@@ -52,3 +52,4 @@ Route::get('pages/error', function (){
 Route::get('products', 'ProductsController@index')->name('products.index');
 Route::get('products/{product}', 'ProductsController@show')->name('products.show');
 Route::post('payment/alipay/notify', 'PaymentController@alipayNotify')->name('payment.alipay.notify');
+Route::post('payment/wechat/notify', 'PaymentController@wechatNotify')->name('payment.wechat.notify');
