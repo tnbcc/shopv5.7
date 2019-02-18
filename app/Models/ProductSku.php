@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Exceptions\InvalidRequestException;
+use App\Exceptions\InternalException;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductSku extends Model
@@ -23,7 +23,7 @@ class ProductSku extends Model
     public function decreaseStock($amount)
     {
         if ($amount < 0) {
-            throw new InvalidRequestException('键库存不可小于0');
+            throw new InternalException('键库存不可小于0');
         }
 
         return $this->newQuery()->where('id', $this->id)->where('stock', '>=', $amount)->decrement('stock', $amount);
@@ -33,9 +33,8 @@ class ProductSku extends Model
     public function addStock($amount)
     {
         if ($amount < 0) {
-            throw new InvalidRequestException('加库存不可小于0');
+            throw new InternalException('加库存不可小于0');
         }
-
-        return $this->increment('stock', $amount);
+        $this->increment('stock', $amount);
     }
 }

@@ -6,21 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderItem extends Model
 {
-    protected $fillable = [
-        'amount',
-        'price',
-        'rating',
-        'review',
-        'reviewed_at'
-    ];
-
+    protected $fillable = ['amount', 'price', 'rating', 'review', 'reviewed_at'];
     protected $dates = ['reviewed_at'];
-
     public $timestamps = false;
 
-    public function order()
+    public function product()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Product::class);
     }
 
     public function productSku()
@@ -28,8 +20,8 @@ class OrderItem extends Model
         return $this->belongsTo(ProductSku::class);
     }
 
-    public function product()
+    public function order()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Order::class);
     }
 }
