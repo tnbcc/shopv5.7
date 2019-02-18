@@ -28,6 +28,8 @@ Route::group(['middleware' => ['auth', 'email_verified']], function() {
 
     //添加到购物车
     Route::post('cart', 'CartController@add')->name('cart.add');
+    Route::get('cart', 'CartController@index')->name('cart.index');
+    Route::delete('cart/{sku}', 'CartController@remove')->name('cart.remove');
 
 });
 
