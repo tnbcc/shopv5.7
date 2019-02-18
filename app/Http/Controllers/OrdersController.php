@@ -30,7 +30,7 @@ class OrdersController extends Controller
         $user  = $request->user();
         $address = UserAddress::find($request->input('address_id'));
 
-        $orderService->store($user, $address, $request->input('remark'), $request->input('items'));
+        return $orderService->store($user, $address, $request->input('remark'), $request->input('items'));
 
     }
 
