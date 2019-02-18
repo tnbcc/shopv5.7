@@ -226,6 +226,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
     ],
-    'order_ttl' => 30,
+    'order_ttl' => 1800,
+
+    'ngrok_url' => env('NGROK_URL'),
 
 ];

@@ -17,6 +17,8 @@ class PayServiceProvider extends ServiceProvider
     {
         $this->app->singleton('alipay', function () {
            $config = config('pay.alipay');
+            $config['notify_url'] = ngrok_url('payment.alipay.notify');
+            $config['return_url'] = ngrok_url('payment.alipay.return');
 
            if (app()->environment() !== 'production') {
                $config['mode']      = 'dev';
