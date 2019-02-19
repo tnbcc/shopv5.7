@@ -22,6 +22,9 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\UpdateProductSoldCount::class,
             \App\Listeners\SendOrderPaidMail::class,
 
+        ],
+        \App\Events\OrderReviewd::class => [
+            \App\Listeners\UpdateProductRating::class,
         ]
     ];
 
