@@ -7,6 +7,7 @@ use App\Exceptions\InvalidRequestException;
 use App\Http\Requests\ApplyRefundRequest;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\SendReviewRequest;
+use App\Models\CouponCode;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\UserAddress;
@@ -35,8 +36,16 @@ class OrdersController extends Controller
     {
         $user  = $request->user();
         $address = UserAddress::find($request->input('address_id'));
+        // 如果用户提交了优惠码
+        if ($code = $request->input('coupon_code')) {
+            $coupon = CouponCode::where('code', $code)->first();
+            if (!$coupon) {
+                throw new CouponCodeUnavailableException('优惠券不存在');
+            }
+        }
 
-        return $orderService->store($user, $address, $request->input('remark'), $request->input('items'));
+
+        return $orderService->store($user, $address, $request->input('remark'), $request->input('items'), $coupon);
 
     }
 
