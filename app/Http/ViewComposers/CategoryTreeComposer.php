@@ -7,7 +7,7 @@ use Illuminate\View\View;
 class CategoryTreeComposer
 {
     protected $categoryService;
-    
+
     public function __construct(CategoryService $categoryService)
     {
         $this->categoryService = $categoryService;
