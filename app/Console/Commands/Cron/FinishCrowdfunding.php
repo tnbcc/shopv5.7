@@ -27,24 +27,31 @@ class FinishCrowdfunding extends Command
     public function handle()
     {
         CrowdfundingProduct::query()
-                         ->where('end_at', '<=', Carbon::now())
-                         ->where('status', CrowdfundingProduct::STATUS_FUNDING)
-                         ->get()
-                         ->each(function (CrowdfundingProduct $crowdfunding) {
-                            if ($crowdfunding->total_amount < $crowdfunding->target_amount) {
-                                $this->crowdfundingFailed($crowdfunding);
-                            } else {
-                                $this->crowdfundingSucceed($crowdfunding);
-                            }
-                         });
+            // 众筹结束时间早于当前时间
+            ->where('end_at', '<=', Carbon::now())
+            // 众筹状态为众筹中
+            ->where('status', CrowdfundingProduct::STATUS_FUNDING)
+            ->get()
+            ->each(function (CrowdfundingProduct $crowdfunding) {
+                // 如果众筹目标金额大于实际众筹金额
+                if ($crowdfunding->target_amount > $crowdfunding->total_amount) {
+                    // 调用众筹失败逻辑
+                    $this->crowdfundingFailed($crowdfunding);
+                } else {
+                    // 否则调用众筹成功逻辑
+                    $this->crowdfundingSucceed($crowdfunding);
+                }
+            });
     }
 
     protected function crowdfundingSucceed(CrowdfundingProduct $crowdfunding)
     {
+        // 只需将众筹状态改为众筹成功即可
         $crowdfunding->update([
-            'stauts' => CrowdfundingProduct::STATUS_SUCCESS
+            'status' => CrowdfundingProduct::STATUS_SUCCESS,
         ]);
     }
+
 
     protected function crowdfundingFailed(CrowdfundingProduct $crowdfunding)
     {
