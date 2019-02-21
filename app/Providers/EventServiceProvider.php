@@ -21,6 +21,7 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\OrderPaid::class => [
             \App\Listeners\UpdateProductSoldCount::class,
             \App\Listeners\SendOrderPaidMail::class,
+            \App\Listeners\UpdateCrowdfundingProductProgress::class,
 
         ],
         \App\Events\OrderReviewd::class => [
