@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Events\OrderReviewd;
 use App\Exceptions\InvalidRequestException;
 use App\Http\Requests\ApplyRefundRequest;
+use App\Http\Requests\CrowdfundingOrderRequest;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\SendReviewRequest;
 use App\Models\CouponCode;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\ProductSku;
 use App\Models\UserAddress;
 use App\Services\OrderService;
 use Carbon\Carbon;
@@ -47,6 +49,17 @@ class OrdersController extends Controller
 
         return $orderService->store($user, $address, $request->input('remark'), $request->input('items'), $coupon);
 
+    }
+
+    //众筹商品下单
+    public function crowdfunding(CrowdfundingOrderRequest $request, OrderService $orderService)
+    {
+        $user   = $request->user();
+        $amount = $request->input('amount');
+        $sku    = ProductSku::find($request->input('sku_id'));
+        $address = UserAddress::find($request->input('address_id'));
+
+        return $orderService->crowdfunding($user, $address, $sku, $amount);
     }
 
     public function show(Order $order, Request $request)

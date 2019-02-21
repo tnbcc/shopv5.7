@@ -34,6 +34,8 @@ Route::group(['middleware' => ['auth', 'email_verified']], function() {
     Route::get('orders', 'OrdersController@index')->name('orders.index');
     //添加订单
     Route::post('orders', 'OrdersController@store')->name('orders.store');
+    //众筹商品下单
+    Route::post('crowdfunding_orders', 'OrdersController@crowdfunding')->name('crowdfunding_orders.store');
     Route::get('orders/{order}', 'OrdersController@show')->name('orders.show');
     Route::post('orders/{order}/received', 'OrdersController@received')->name('orders.received');
     //订单评价
