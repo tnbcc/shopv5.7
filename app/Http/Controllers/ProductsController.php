@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\InvalidRequestException;
+use App\Models\Category;
 use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -26,6 +27,19 @@ class ProductsController extends Controller
             });
         }
 
+
+        //如果传入category_id
+
+        if ($request->input('category_id') && $category = Category::find($request->input('category_id'))) {
+            if ($category->is_directory) {
+                $builder->whereHas('category', function ($query) use ($category) {
+                   $query->where('path', 'like', $category->path.$category->id.'-%');
+                });
+            } else {
+                $builder->where('category_id', $category->id);
+            }
+        }
+
         if ($order = $request->input('order', '')) {
 
             //是否以_asc 或者 desc 结尾
@@ -42,8 +56,10 @@ class ProductsController extends Controller
           'search' => $search,
           'order'  => $order,
         ];
+        //isset($category) ? $category : null
+        $category = $category ?? null;
 
-        return view('products.index', compact('products', 'filters'));
+        return view('products.index', compact('products', 'filters', 'category'));
     }
 
     public function show(Request $request, Product $product)
