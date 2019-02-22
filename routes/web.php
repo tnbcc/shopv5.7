@@ -56,8 +56,9 @@ Route::group(['middleware' => ['auth', 'email_verified']], function() {
     //检查优惠券
     Route::get('coupon_codes/{code}', 'CouponCodesController@show')->name('coupon_codes.show');
 
-    //查看优惠券
+    //查看优惠券列表
     Route::get('installments', 'InstallmentsController@index')->name('installments.index');
+    Route::get('installments/{installment}', 'InstallmentsController@show')->name('installments.show');
 });
 
 Route::get('pages/error', function (){
