@@ -148,7 +148,7 @@
                         </div>
                     </div>
                     <!-- 猜你喜欢开始 -->
-                    @if(count($similar) > 0 )
+                    @if(count($similar) > 0)
                         <div class="similar-products">
                             <div class="title">猜你喜欢</div>
                             <div class="row products-list">
@@ -171,8 +171,9 @@
                                 @endforeach
                             </div>
                         </div>
-                    @endif
-                    <!-- 猜你喜欢结束 -->
+                @endif
+                <!-- 猜你喜欢结束 -->
+
                 </div>
             </div>
         </div>
@@ -192,7 +193,10 @@
          $('.btn-favor').click(function () {
              axios.post('{{ route('products.favor', ['product' => $product->id]) }}')
                  .then(function () {
-                     swal('操作成功', '', 'success');
+                     swal('操作成功', '', 'success')
+                         .then(function () {
+                             location.href = '/products/favorites';
+                         });
                  },function (error) {
                      if (error.response && error.response.status === 401) {
                          swal('请先登录', '', 'error');
@@ -207,7 +211,7 @@
          //取消收藏
          $('.btn-disfavor').click(function () {
              axios.delete('{{ route('products.disfavor', ['product' => $product->id]) }}')
-                 .then(function () {
+                 .then(function (response) {
                      swal('操作成功', '', 'success')
                          .then(function () {
                              location.reload();

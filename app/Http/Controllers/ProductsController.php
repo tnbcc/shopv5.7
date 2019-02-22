@@ -56,7 +56,6 @@ class ProductsController extends Controller
             }
         }
 
-        // 最后通过 getParams() 方法取回构造好的查询参数
         $result = app('es')->search($builder->getParams());
 
         // 通过 collect 函数将返回结果转为集合，并通过集合的 pluck 方法取到返回的商品 ID 数组
@@ -69,7 +68,7 @@ class ProductsController extends Controller
         ]);
 
         $properties = [];
-
+        // 如果返回结果里有 aggregations 字段，说明做了分面搜索
         if (isset($result['aggregations'])) {
             // 使用 collect 函数将返回值转为集合
             $properties = collect($result['aggregations']['properties']['properties']['buckets'])
@@ -81,9 +80,11 @@ class ProductsController extends Controller
                     ];
                 })
                 ->filter(function ($property) use ($propertyFilters) {
-                    return count($property['values']) > 1 && !isset($propertyFilters[$property['key']]);
+                    // 过滤掉只剩下一个值 或者 已经在筛选条件里的属性
+                    return count($property['values']) > 1 && !isset($propertyFilters[$property['key']]) ;
                 });
         }
+
 
         return view('products.index', [
             'products' => $pager,
@@ -117,6 +118,7 @@ class ProductsController extends Controller
                         ->limit(10)
                         ->get();
 
+
         // 创建一个查询构造器，只搜索上架的商品，取搜索结果的前 4 个商品
         $builder = (new ProductSearchBuilder())->onSale()->paginate(4, 1);
         // 遍历当前商品的属性
@@ -131,10 +133,9 @@ class ProductsController extends Controller
         $params['body']['query']['bool']['must_not'] = [['term' => ['_id' => $product->id]]];
         // 搜索
         $result = app('es')->search($params);
-        $similarProductIds = collect($result['hits']['hits'])->pluck('_id')->all();
+        $similarProductIds = $service->getSimilarProductIds($product, 4);
         // 根据 Elasticsearch 搜索出来的商品 ID 从数据库中读取商品数据
-        $similar  = Product::query()->byIds($similarProductIds)->get();
-
+        $similar   = Product::query()->byIds($similarProductIds)->get();
 
         return view('products.show', compact('product', 'favored', 'reviews', 'similar'));
     }
@@ -158,9 +159,9 @@ class ProductsController extends Controller
     {
         $user = $request->user();
 
-        $user->favoriteProducts()->detach($product);
+       $user->favoriteProducts()->detach($product);
 
-        return [];
+        return $product->id;
     }
 
     //收藏列表
